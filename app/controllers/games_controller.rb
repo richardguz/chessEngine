@@ -1,4 +1,6 @@
 class GamesController < ApplicationController
+	require 'json'
+
 	def new
 		#generate player tokens
 		player1_token = generatePlayerToken
@@ -54,6 +56,23 @@ class GamesController < ApplicationController
 	def show
 		if Game.exists?(params[:id])
 			@game = Game.find(params[:id])
+			@board = JSON.parse(@game.board)
+			@board['board'] = @board['board'].reverse
+		else
+			render :json => {:error => "Could not find game"}
+		end
+	end
+
+	def state
+		if Game.exists?(params[:id])
+			game = Game.find(params[:id])
+			board = JSON.parse(game.board)
+			board['board'] = board['board'].reverse
+			data = {
+				:turn => !game.player1_turn,
+				:board => board
+			}
+			render :json => data
 		else
 			render :json => {:error => "Could not find game"}
 		end

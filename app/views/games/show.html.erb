@@ -1,1 +1,24 @@
-<%= react_component 'NewGame', { data: @game } %>
+<div class="board">
+	<table align="center">
+		<tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></th></tr>
+		<% @board['board'].each_with_index do |row, i|%>
+			<tr><th><%= 8 - i %></th>
+			<% row.each_with_index do |cell, j| %>
+				<td id="<%= i %><%= j %>"><%= cell %></td>
+			<% end %>
+			<th><%= 8 - i %></th>
+			</tr>
+		<% end %>
+		<tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></th></tr>
+	</table>
+</div>
+
+<script type="text/javascript">
+	//get game id
+	var gid = "<%= @game.id %>"
+
+	//begin polling for game updates
+	window.setInterval(function(){
+	  		pollForGameUpdates(gid);
+	}, 2000);
+</script>

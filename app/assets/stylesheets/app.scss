@@ -5,3 +5,20 @@
     margin-bottom: 10px;
   }
 }
+
+.board{
+	width: 164px;
+	margin-left: -82px; /* half of your element's width */
+	height: 224px;
+	margin-top: -112px;  /* half of your element's height */
+
+	position: absolute;
+	/*for debugging*/
+	/*background-color: yellow;*/
+	top: 50%;
+  left: 50%;
+	td {
+	    border: 0.5px solid black;
+	}
+}
+
