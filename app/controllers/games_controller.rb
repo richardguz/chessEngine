@@ -69,7 +69,7 @@ class GamesController < ApplicationController
 			board = JSON.parse(game.board)
 			board['board'] = board['board'].reverse
 			data = {
-				:turn => !game.player1_turn,
+				:turn => game.player1_turn,
 				:board => board
 			}
 			render :json => data
