@@ -96,8 +96,8 @@ class GamesController < ApplicationController
 					old_board[to[0]][to[1]] = old_board[from[0]][from[1]]
 					old_board[from[0]][from[1]] = ''
 					game.board = {:board => old_board}.to_json
-					#todo uncomment
-					#game.player1_turn = !game.player1_turn
+
+					game.player1_turn = !game.player1_turn
 					game.save
 				else
 					#return move invalid error
