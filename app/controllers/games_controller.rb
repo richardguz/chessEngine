@@ -26,6 +26,7 @@ class GamesController < ApplicationController
 
 	def join
 		#check if game exists
+		#TODO: check if there are already 2 users, reject
 		#TODO: make it just 1 DB lookup
 		if Game.exists?(params[:id])
 			g = Game.find(params[:id])
@@ -63,6 +64,7 @@ class GamesController < ApplicationController
 		end
 	end
 
+	#returns game state (not for players, but for polling to display board)
 	def state
 		if Game.exists?(params[:id])
 			game = Game.find(params[:id])
@@ -77,6 +79,65 @@ class GamesController < ApplicationController
 			render :json => {:error => "Could not find game"}
 		end
 	end
+
+	def move
+		#check if the game exists
+		if Game.exists?(params[:id])
+			game = Game.find(params[:id])
+			data = request.raw_post
+			data_parsed = JSON.parse(data)
+			player_token = data_parsed['token']
+			new_board = data_parsed['board']
+			#check token and see if it's that player's turn
+			if isPlayerTurn?(player_token, game)
+				#check if the move is valid
+				move = data_parsed
+				if isMoveValid?(game, new_board)
+					#change the state of the board accordingly (and change the turn variable)
+					game.board = {:board => new_board}.to_json
+					game.player1_turn = !game.player1_turn
+					game.save
+				else
+					#return move invalid error
+					render :json => {:error => "Move is invalid"}
+				end
+			else
+				#return not player's turn error
+				render :json => {:error => "Wait your turn"}
+			end
+		else
+			#return game does not exist error
+			render :json => {:error => "Game does not exist"}
+		end
+	end
+
+	def isPlayerTurn?(player_token, game)
+		turn = game.player1_turn
+		if turn
+			#if player 1's turn
+			player1_token = game.player1_token
+			if player_token == player1_token
+				return true
+			else
+				#not the player's turn
+				return false
+			end	
+		else
+			#if player 2's turn
+			player2_token = game.player2_token
+			if player_token == player2_token
+				return true
+			else
+				#not the player's turn
+				return false
+			end
+		end
+	end
+
+	def isMoveValid?(game, new_board)
+		#todo
+		return true
+	end 
 
 	private
 	#generates a random player token (50 chars just letters caps and lowercase)
