@@ -156,8 +156,20 @@ class GamesController < ApplicationController
 		if !isValidTarget?(piece_moved, to, old_board)
 			return false
 		end
+		if !isMoveValidForPiece?(piece_moved, from, to, old_board)
+			return false
+		end
 		return true
 	end 
+
+	def isMoveValidForPiece?(piece, from, to, old_board)
+		case piece
+			when 'N', 'n'
+				return Knight.isValidMove?(to, from, old_board)
+			else return true
+		end
+
+	end
 
 	def isValidTarget?(piece, to, board)
 		if board[to[0]][to[1]] == ''
