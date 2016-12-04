@@ -58,7 +58,6 @@ class GamesController < ApplicationController
 		if Game.exists?(params[:id])
 			@game = Game.find(params[:id])
 			@board = JSON.parse(@game.board)
-			@board['board'] = @board['board'].reverse
 		else
 			render :json => {:error => "Could not find game"}
 		end
@@ -69,7 +68,6 @@ class GamesController < ApplicationController
 		if Game.exists?(params[:id])
 			game = Game.find(params[:id])
 			board = JSON.parse(game.board)
-			board['board'] = board['board'].reverse
 			data = {
 				:turn => game.player1_turn,
 				:board => board
@@ -87,14 +85,17 @@ class GamesController < ApplicationController
 			data = request.raw_post
 			data_parsed = JSON.parse(data)
 			player_token = data_parsed['token']
-			new_board = data_parsed['board']
+			from = data_parsed['from']
+			to = data_parsed['to']
 			#check token and see if it's that player's turn
 			if isPlayerTurn?(player_token, game)
 				#check if the move is valid
-				move = data_parsed
-				if isMoveValid?(game, new_board)
+				if isMoveValid?(game, from, to)
 					#change the state of the board accordingly (and change the turn variable)
-					game.board = {:board => new_board}.to_json
+					old_board = JSON.parse(game.board)['board']
+					old_board[to[0]][to[1]] = old_board[from[0]][from[1]]
+					old_board[from[0]][from[1]] = ''
+					game.board = {:board => old_board}.to_json
 					game.player1_turn = !game.player1_turn
 					game.save
 				else
@@ -134,7 +135,7 @@ class GamesController < ApplicationController
 		end
 	end
 
-	def isMoveValid?(game, new_board)
+	def isMoveValid?(game, from, to)
 		#todo
 		return true
 	end 
@@ -149,13 +150,13 @@ class GamesController < ApplicationController
 
 	#returns a new board (array) with all pieces in starting positions
 	def newBoard
-			[['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R'], 
-			 ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-			 ['', '', '', '', '', '', '', ''],
-			 ['', '', '', '', '', '', '', ''],
-			 ['', '', '', '', '', '', '', ''],
-			 ['', '', '', '', '', '', '', ''],
+			[['r', 'n', 'b', 'k', 'q', 'b', 'n', 'r'],
 			 ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-			 ['r', 'n', 'b', 'k', 'q', 'b', 'n', 'r']]
+			 ['', '', '', '', '', '', '', ''],
+			 ['', '', '', '', '', '', '', ''],
+			 ['', '', '', '', '', '', '', ''],
+			 ['', '', '', '', '', '', '', ''],
+			 ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+			 ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']]
 	end
 end
