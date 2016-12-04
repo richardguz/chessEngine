@@ -168,6 +168,14 @@ class GamesController < ApplicationController
 				return Knight.isValidMove?(to, from, old_board)
 			when 'R', 'r'
 				return Rook.isValidMove?(to, from, old_board)
+			when 'K', 'k'
+				return King.isValidMove?(to, from, old_board, piece)
+			when 'Q', 'q'
+				return Queen.isValidMove?(to, from, old_board)
+			when 'B', 'b'
+				return Bishop.isValidMove?(to, from, old_board)
+			when 'P', 'p'
+				return Pawn.isValidMove?(to, from, old_board, piece)
 			else return true
 		end
 
