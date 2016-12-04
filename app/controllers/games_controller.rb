@@ -70,7 +70,7 @@ class GamesController < ApplicationController
 			board = JSON.parse(game.board)
 			data = {
 				:turn => game.player1_turn,
-				:board => board
+				:board => board['board']
 			}
 			render :json => data
 		else
@@ -96,7 +96,8 @@ class GamesController < ApplicationController
 					old_board[to[0]][to[1]] = old_board[from[0]][from[1]]
 					old_board[from[0]][from[1]] = ''
 					game.board = {:board => old_board}.to_json
-					game.player1_turn = !game.player1_turn
+					#todo uncomment
+					#game.player1_turn = !game.player1_turn
 					game.save
 				else
 					#return move invalid error
@@ -136,9 +137,60 @@ class GamesController < ApplicationController
 	end
 
 	def isMoveValid?(game, from, to)
-		#todo
+		old_board = JSON.parse(game.board)['board']
+		#check if the coords are on the board
+		if !isOnBoard?(to, from)
+			return false
+		end
+		#check if to == from (no move was made)
+		if to == from
+			return false
+		end
+		piece_moved = old_board[from[0]][from[1]]
+		target_cell = old_board[to[0]][to[1]]
+		#check if from piece moved is valid
+		if !isValidPiece?(piece_moved, game)
+			return false
+		end
+		#check if target is either empty or of opposite color
+		if !isValidTarget?(piece_moved, to, old_board)
+			return false
+		end
 		return true
 	end 
+
+	def isValidTarget?(piece, to, board)
+		if board[to[0]][to[1]] == ''
+			return true
+		elsif isWhite?(board[to[0]][to[1]]) == !isWhite?(piece)
+			return true
+		else
+			return false
+		end
+	end
+
+	def isValidPiece?(piece, game)
+		#if no piece on from cell
+		if piece == ''
+			return false
+		elsif !isWhite?(piece) && game.player1_turn
+			return false
+		elsif isWhite?(piece) && !game.player1_turn
+			return false
+		end
+		return true
+	end
+
+	def isOnBoard?(to, from)
+		allCoords = to + from
+		minCoord = allCoords.min
+		maxCoord = allCoords.max
+		if minCoord < 0 || maxCoord > 7
+			return false
+		else
+			return true
+		end
+	end
 
 	private
 	#generates a random player token (50 chars just letters caps and lowercase)
@@ -158,5 +210,18 @@ class GamesController < ApplicationController
 			 ['', '', '', '', '', '', '', ''],
 			 ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
 			 ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']]
+	end
+
+	#returns true if color is white, false if color is black
+	def isWhite?(piece)
+		if upcase?(piece)
+			return true
+		else
+			return false
+		end
+	end
+
+	def upcase?(c)
+		/[[:upper:]]/.match(c)
 	end
 end
