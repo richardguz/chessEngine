@@ -166,6 +166,8 @@ class GamesController < ApplicationController
 		case piece
 			when 'N', 'n'
 				return Knight.isValidMove?(to, from, old_board)
+			when 'R', 'r'
+				return Rook.isValidMove?(to, from, old_board)
 			else return true
 		end
 
