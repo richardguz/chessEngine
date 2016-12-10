@@ -14,10 +14,10 @@ class GamesController < ApplicationController
 			#turn true is your turn, turn false is opponent's turn
 			data = {
 				:token => player1_token,
+				:id => game.id,
 				:turn => true,
 				:board => board
 			}
-			puts game.board
 			render :json => data
 		else
 			render :json => {:error => "Could not create game"}
@@ -42,10 +42,12 @@ class GamesController < ApplicationController
 			g.save
 			
 			#respond with token and board layout
+			board = JSON.parse(g.board)
+
 			data = {
 				:token => player2_token,
 				:turn => !g.player1_turn,
-				:board => g.board
+				:board => board['board']
 			}
 			render :json => data
 		else
