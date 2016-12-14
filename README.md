@@ -26,7 +26,7 @@ Joining a game:
 Gameplay:
 - The two clients will poll the engine with get requests to chessEngineIP/games/:id/state to get the state of the game and check whose turn it is. This request will return the following json object:
 
-{"turn":true,"board":[["r","n","b","k","q","b","n","r"],["p","p","p","p","p","p","p","p"],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["P","P","P","P","P","P","P","P"],["R","N","B","K","Q","B","N","R"]], "en_passant": {"x": -1, "y": -1}
+{"turn":true,"board":[["r","n","b","k","q","b","n","r"],["p","p","p","p","p","p","p","p"],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["","","","","","","",""],["P","P","P","P","P","P","P","P"],["R","N","B","K","Q","B","N","R"]], "white_can_castle_king_side":true,"white_can_castle_queen_side":true,"black_can_castle_king_side":true,"black_can_castle_queen_side":true,"en_passant": {"x": -1, "y": -1}}
 
 "turn" this time signifies whether or not it is white's turn
 "en_passant", if not equal to [-1, -1] tells the client that an en passant capture is available at that specific square

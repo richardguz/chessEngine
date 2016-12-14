@@ -9,7 +9,7 @@ class GamesController < ApplicationController
 		board = newBoard
 
 		#save new game to DB
-		if game = Game.create(:player1_token => player1_token, :board => {:board => board}.to_json, :player1_turn => true) 
+		if game = Game.create(:player1_token => player1_token, :en_passant => {:x => -1, :y => -1}.to_json, :board => {:board => board}.to_json, :player1_turn => true) 
 			#assemble data and send to requesting client in response body (if creation successful)
 			#turn true is your turn, turn false is opponent's turn
 			data = {
@@ -70,9 +70,15 @@ class GamesController < ApplicationController
 		if Game.exists?(params[:id])
 			game = Game.find(params[:id])
 			board = JSON.parse(game.board)
+			en_passant = JSON.parse(game.en_passant)
 			data = {
 				:turn => game.player1_turn,
-				:board => board['board']
+				:board => board['board'], 
+				:white_can_castle_king_side => game.white_can_castle_king_side,
+				:white_can_castle_queen_side => game.white_can_castle_queen_side, 
+				:black_can_castle_king_side => game.black_can_castle_king_side,
+				:black_can_castle_queen_side => game.black_can_castle_queen_side, 
+				:en_passant => en_passant
 			}
 			render :json => data
 		else
