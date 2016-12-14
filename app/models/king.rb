@@ -203,4 +203,24 @@ class King
 		return false
 	end
 
+	def self.isInCheck?(board, kingChar)
+		if kingChar == 'K' || kingChar == 'k'
+			coords = findPiece(board, kingChar)
+			return isCheck?(coords, board, kingChar)
+		else
+			return false
+		end
+	end
+
+	def self.findPiece(board, piece)
+		8.times do |i|
+			8.times do |j|
+				if board[i][j] == piece
+					return [i,j]
+				end
+			end
+		end
+		return [-1,-1]
+	end
+
 end

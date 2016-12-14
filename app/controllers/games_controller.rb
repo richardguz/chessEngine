@@ -94,7 +94,7 @@ class GamesController < ApplicationController
 				#check if the move is valid
 				old_board = JSON.parse(game.board)['board']
 				new_board = attemptMove(to, from, game)
-				if !boardsIdentical?(old_board, new_board)
+				if !boardsIdentical?(old_board, new_board) && !King.isInCheck?(new_board, (if game.player1_turn then 'K' else 'k' end))
 					#change the state of the board accordingly (and change the turn variable)
 					game.board = {:board => new_board}.to_json
 					game.player1_turn = !game.player1_turn

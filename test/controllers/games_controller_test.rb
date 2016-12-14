@@ -367,4 +367,72 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     postMove(@player1_token, [3,3], [2,2], false)
   end
 
+  test "pawn blocks check" do
+    #white queen pawn 1 space
+    postMove(@player1_token, [6,4], [5,4], true)
+
+    #black king pawn 2 spaces
+    postMove(@player2_token, [1,3], [3,3], true)
+
+    #white rook pawn 1 space
+    postMove(@player1_token, [6,0], [5,0], true)
+
+    #black bishop into check
+    postMove(@player2_token, [0,2], [4,6], true)
+
+    #white bishop pawn 1 space
+    postMove(@player1_token, [6,5], [5,5], true)
+  end
+
+  test "king moves out of check" do
+    #white queen pawn 1 space
+    postMove(@player1_token, [6,4], [5,4], true)
+
+    #black king pawn 2 spaces
+    postMove(@player2_token, [1,3], [2,3], true)
+
+    #white king pawn 1 space
+    postMove(@player1_token, [6,3], [5,3], true)
+
+    #black bishop into check
+    postMove(@player2_token, [0,2], [4,6], true)
+
+    #white kings up and out of check
+    postMove(@player1_token, [7,3], [6,3], true)
+  end
+
+  test "takes piece that is checking king" do
+    #white queen pawn 1 space
+    postMove(@player1_token, [6,4], [5,4], true)
+
+    #black king pawn 2 spaces
+    postMove(@player2_token, [1,3], [2,3], true)
+
+    #white rook pawn 1 space
+    postMove(@player1_token, [6,7], [5,7], true)
+
+    #black bishop into check
+    postMove(@player2_token, [0,2], [4,6], true)
+
+    #white pawn takes bishop that is checking king
+    postMove(@player1_token, [5,7], [4,6], true)
+  end
+
+  test "king tries to remain in check" do
+    #white queen pawn 1 space
+    postMove(@player1_token, [6,4], [5,4], true)
+
+    #black king pawn 2 spaces
+    postMove(@player2_token, [1,3], [2,3], true)
+
+    #white king pawn 1 space
+    postMove(@player1_token, [6,0], [5,0], true)
+
+    #black bishop into check
+    postMove(@player2_token, [0,2], [4,6], true)
+
+    #white knight moves out, leaving king in check
+    postMove(@player1_token, [7,1], [5,2], false)
+  end
+
 end
