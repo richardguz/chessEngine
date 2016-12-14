@@ -435,4 +435,91 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     postMove(@player1_token, [7,1], [5,2], false)
   end
 
+  test "pawn to queen white" do 
+    board = [['' ,  '', 'b', 'k', 'q', 'b', 'n', 'r'],
+             ['P', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+             ['' ,  '',  '',  '',  '', '' , '' , '' ],
+             ['n',  '',  '',  '',  '', '' , '' , '' ],
+             ['' ,  '',  '',  '',  '', '' , '' , '' ],
+             ['' ,  '',  'b', '',  '', '' , '' , '' ],
+             ['' , 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+             ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']]
+    @game.board = {:board => board}.to_json
+    @game.save
+    
+    
+    #white pawn into end file
+    postMove(@player1_token, [1,0], [0,0], true)
+    @game = Game.find(@game.id)
+    assert_equal [['Q' ,  '', 'b', 'k', 'q', 'b', 'n', 'r'],
+                   ['', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+                   ['' ,  '',  '',  '',  '', '' , '' , '' ],
+                   ['n',  '',  '',  '',  '', '' , '' , '' ],
+                   ['' ,  '',  '',  '',  '', '' , '' , '' ],
+                   ['' ,  '',  'b', '',  '', '' , '' , '' ],
+                   ['' , 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                   ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']],
+                   JSON.parse(@game.board)['board']
+
+    #black king pawn up
+    postMove(@player2_token, [1,3], [2,3], true)
+
+    #new white queen takes knight
+    postMove(@player1_token, [0,0], [3,0], true)
+    @game = Game.find(@game.id)
+    assert_equal [['' ,  '', 'b', 'k', 'q', 'b', 'n', 'r'],
+                   ['', 'p', 'p', '', 'p', 'p', 'p', 'p'],
+                   ['' ,  '',  '',  'p',  '', '' , '' , '' ],
+                   ['Q',  '',  '',  '',  '', '' , '' , '' ],
+                   ['' ,  '',  '',  '',  '', '' , '' , '' ],
+                   ['' ,  '',  'b', '',  '', '' , '' , '' ],
+                   ['' , 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                   ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']],
+                   JSON.parse(@game.board)['board']
+
+    #black king pawn up
+    postMove(@player2_token, [2,3], [3,3], true)
+
+    #new white queen takes bishop
+    postMove(@player1_token, [3,0], [5,2], true)
+    @game = Game.find(@game.id)
+    assert_equal [['' ,  '', 'b', 'k', 'q', 'b', 'n', 'r'],
+                   ['', 'p', 'p', '', 'p', 'p', 'p', 'p'],
+                   ['' ,  '',  '',  '',  '', '' , '' , '' ],
+                   ['',  '',  '',  'p',  '', '' , '' , '' ],
+                   ['' ,  '',  '',  '',  '', '' , '' , '' ],
+                   ['' ,  '',  'Q', '',  '', '' , '' , '' ],
+                   ['' , 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                   ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']],
+                   JSON.parse(@game.board)['board']
+
+  end
+
+  test "pawn to queen black" do
+    board = [['' ,  '', 'b', 'k', 'q', 'b', 'n', 'r'],
+             ['p', '', 'p', 'p', 'p', 'p', 'p', 'p'],
+             ['' ,  '',  '',  '',  '', '' , '' , '' ],
+             ['n',  '',  '',  '',  '', '' , '' , '' ],
+             ['' ,  '',  '',  '',  '', '' , '' , '' ],
+             ['' ,  '',  'b', '',  '', '' , '' , '' ],
+             ['' , 'p', 'P', 'P', 'P', 'P', 'P', 'P'],
+             ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']]
+    @game.board = {:board => board}.to_json
+    @game.player1_turn = false
+    @game.save
+    
+    
+    #black pawn takes rook to be in end file
+    postMove(@player2_token, [6,1], [7,0], true)
+    @game = Game.find(@game.id)
+    assert_equal [['' ,  '', 'b', 'k', 'q', 'b', 'n', 'r'],
+                 ['p', '', 'p', 'p', 'p', 'p', 'p', 'p'],
+                 ['' ,  '',  '',  '',  '', '' , '' , '' ],
+                 ['n',  '',  '',  '',  '', '' , '' , '' ],
+                 ['' ,  '',  '',  '',  '', '' , '' , '' ],
+                 ['' ,  '',  'b', '',  '', '' , '' , '' ],
+                 ['' , '', 'P', 'P', 'P', 'P', 'P', 'P'],
+                 ['q', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']],
+                   JSON.parse(@game.board)['board']
+  end
 end

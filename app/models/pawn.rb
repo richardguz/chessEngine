@@ -6,6 +6,11 @@ class Pawn
 		piece = board[from[0]][from[1]]
 		if isValidMove?(to, from, board, piece)
 			board[to[0]][to[1]] = board[from[0]][from[1]]
+			if to[0] == 7
+				board[to[0]][to[1]] = 'q'
+			elsif to[0] == 0
+				board[to[0]][to[1]] = 'Q'
+			end
 			board[from[0]][from[1]] = ''
 			if (to[0] - from[0]).abs == 2
 				en_passant['x'] = from[0] + (if game.player1_turn then -1 else 1 end)
