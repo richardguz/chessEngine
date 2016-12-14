@@ -1,4 +1,11 @@
 class Knight
+	def self.attemptMove(to, from, board)
+		if isValidMove?(to, from, board)
+			board[to[0]][to[1]] = board[from[0]][from[1]]
+			board[from[0]][from[1]] = ''
+		end
+		return board
+	end
 
 	def self.isValidMove?(to, from, board)
 		x1 = from[0]

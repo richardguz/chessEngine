@@ -1,4 +1,13 @@
 class Pawn
+
+	def self.attemptMove(to, from, board, piece)
+		if isValidMove?(to, from, board, piece)
+			board[to[0]][to[1]] = board[from[0]][from[1]]
+			board[from[0]][from[1]] = ''
+		end
+		return board
+	end
+
 	def self.isValidMove?(to, from, board, piece)
 		x1 = from[0]
 		x2 = to[0]
