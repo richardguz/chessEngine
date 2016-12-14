@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 20161214042424) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
     t.         "board"
+    t.         "en_passant"
     t.string   "player1_token"
     t.string   "player2_token"
     t.boolean  "player1_turn"

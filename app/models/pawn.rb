@@ -2,11 +2,53 @@ class Pawn
 
 	def self.attemptMove(to, from, game)		
 		board = JSON.parse(game.board)['board']
+		en_passant = JSON.parse(game.en_passant)
 		piece = board[from[0]][from[1]]
 		if isValidMove?(to, from, board, piece)
 			board[to[0]][to[1]] = board[from[0]][from[1]]
 			board[from[0]][from[1]] = ''
+			if (to[0] - from[0]).abs == 2
+				en_passant['x'] = from[0] + (if game.player1_turn then -1 else 1 end)
+				en_passant['y'] = from[1]
+				game.en_passant = en_passant.to_json
+			else
+				en_passant['x'] = -1
+				en_passant['y'] = -1
+				game.en_passant = en_passant.to_json
+			end
+		elsif isValidEnPassant?(to, from, game)
+			return performEnPassant(from, game)
 		end
+		return board
+	end
+
+	def self.isValidEnPassant?(to, from, game)
+		en_passant = JSON.parse(game.en_passant)
+		board = JSON.parse(game.board)['board']
+		if en_passant['x'] == to[0] && en_passant['y'] == to[1]
+			if isValidTake?(to, from, board, 'P', true) && game.player1_turn
+				return true
+			elsif isValidTake?(to, from, board, 'p', true) && !game.player1_turn
+				return true
+			end
+		end
+		return false
+	end
+
+	def self.performEnPassant(from, game)
+		board = JSON.parse(game.board)['board']
+		en_passant = JSON.parse(game.en_passant)
+		board[from[0]][from[1]] = ''
+		if game.player1_turn
+			board[en_passant['x']][en_passant['y']] = 'P'
+			board[en_passant['x'] + 1][en_passant['y']] = '' 
+		else
+			board[en_passant['x']][en_passant['y']] = 'p'
+			board[en_passant['x'] - 1][en_passant['y']] = '' 
+		end
+		en_passant['x'] = -1
+		en_passant['y'] = -1
+		game.en_passant = en_passant.to_json
 		return board
 	end
 

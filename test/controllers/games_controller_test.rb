@@ -12,7 +12,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 						 ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']]
 		@player1_token = "a"
 		@player2_token = "b"
-		@game = Game.create(:player1_token => @player1_token, :player2_token => @player2_token, :board => {:board => board}.to_json, :player1_turn => true)
+		@game = Game.create(:player1_token => @player1_token, :en_passant => {:x => -1, :y => -1}.to_json, :player2_token => @player2_token, :board => {:board => board}.to_json, :player1_turn => true)
 	end
 
 	def postMove(token, from, to, valid)
@@ -325,8 +325,46 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     #black queen side castle
     postMove(@player2_token, [0,3], [0,5], false)
+  end
 
+    test "en passant allowed" do
+    #white king pawn 2 spaces
+    postMove(@player1_token, [6,3], [4,3], true)
 
+    #black rook pawn 2 spaces
+    postMove(@player2_token, [1,0], [3,0], true)
+
+    #white king pawn 1 space
+    postMove(@player1_token, [4,3], [3,3], true)
+
+    #black queen pawn 2 spaces
+    postMove(@player2_token, [1,4], [3,4], true)
+
+    #white king pawn take black queen pawn with en passant
+    postMove(@player1_token, [3,3], [2,4], true)
+  end
+
+  test "en passant not allowed" do
+    #white king pawn 2 spaces
+    postMove(@player1_token, [6,3], [4,3], true)
+
+    #black rook pawn 2 spaces
+    postMove(@player2_token, [1,0], [3,0], true)
+
+    #white king pawn 1 space
+    postMove(@player1_token, [4,3], [3,3], true)
+
+    #black queen pawn 2 spaces
+    postMove(@player2_token, [1,4], [3,4], true)
+
+    #white king forward 1 space
+    postMove(@player1_token, [7,3], [6,3], true)
+
+    #black rook pawn 1 more space
+    postMove(@player2_token, [3,0], [4,0], true)
+
+    #white king pawn take black queen pawn with en passant attempt
+    postMove(@player1_token, [3,3], [2,2], false)
   end
 
 end
