@@ -10,15 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161203063700) do
+ActiveRecord::Schema.define(version: 20161214042424) do
 
   create_table "games", force: :cascade do |t|
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.         "board"
     t.string   "player1_token"
     t.string   "player2_token"
     t.boolean  "player1_turn"
+    t.boolean  "white_can_castle_king_side",  default: true
+    t.boolean  "black_can_castle_king_side",  default: true
+    t.boolean  "white_can_castle_queen_side", default: true
+    t.boolean  "black_can_castle_queen_side", default: true
   end
 
 end

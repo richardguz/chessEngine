@@ -168,4 +168,165 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
   	#black queen right 3, take white king pawn
   	postMove(@player2_token, [3,1], [3,4], true)
   end
+
+  test "king side castle allowed" do
+  	#white king pawn up 1
+  	postMove(@player1_token, [6,3], [5,3], true)
+
+  	#black king pawn up 1
+  	postMove(@player2_token, [1,3], [3,3], true)
+
+  	#white bishop out
+  	postMove(@player1_token, [7,2], [5,4], true)
+
+  	#black bishop out
+  	postMove(@player2_token, [0,2], [2,4], true)
+
+  	#white knight out
+  	postMove(@player1_token, [7,1], [5,2], true)
+
+  	#black knight out
+  	postMove(@player2_token, [0,1], [2,2], true)
+
+  	#white king side castle
+  	postMove(@player1_token, [7,3], [7,1], true)
+
+  	#black king side castle
+  	postMove(@player2_token, [0,3], [0,1], true)
+  end
+
+  test "king side castle not allowed" do
+  	#white king pawn up 1
+  	postMove(@player1_token, [6,3], [5,3], true)
+
+  	#black king pawn up 1
+  	postMove(@player2_token, [1,3], [3,3], true)
+
+  	#white bishop out
+  	postMove(@player1_token, [7,2], [5,4], true)
+
+  	#black bishop out
+  	postMove(@player2_token, [0,2], [2,4], true)
+
+  	#white knight out
+  	postMove(@player1_token, [7,1], [5,2], true)
+
+  	#black knight out
+  	postMove(@player2_token, [0,1], [2,2], true)
+
+    #white king moves left 1
+    postMove(@player1_token, [7,3], [7,2], true)
+
+    #black king moves left 1
+    postMove(@player2_token, [0,3], [0,2], true)
+
+    #white king moves right 1
+    postMove(@player1_token, [7,2], [7,3], true)
+
+    #black king moves right 1
+    postMove(@player2_token, [0,2], [0,3], true)
+
+  	#white king side castle
+  	postMove(@player1_token, [7,3], [7,1], false)
+
+    #white king move 1 left (not significant)
+    postMove(@player1_token, [7,3], [7,2], true)
+
+  	#black king side castle
+  	postMove(@player2_token, [0,3], [0,1], false)
+  end
+
+  test "queen side castle allowed" do
+    #white king pawn up 2
+    postMove(@player1_token, [6,3], [4,3], true)
+
+    #black king pawn up 2
+    postMove(@player2_token, [1,3], [3,3], true)
+
+    #white queen pawn up 1
+    postMove(@player1_token, [6,4], [5,4], true)
+
+    #black queen pawn up 1
+    postMove(@player2_token, [1,4], [2,4], true)
+
+    #white queen out
+    postMove(@player1_token, [7,4], [3,0], true)
+
+    #black queen out
+    postMove(@player2_token, [0,4], [4,0], true)
+
+    #white knight out
+    postMove(@player1_token, [7,6], [5,7], true)
+
+    #black knight out
+    postMove(@player2_token, [0,6], [2,7], true)
+
+    #white bishop out
+    postMove(@player1_token, [7,5], [4,2], true)
+
+    #black bishop out
+    postMove(@player2_token, [0,5], [3,2], true)
+
+    #white queen side castle
+    postMove(@player1_token, [7,3], [7,5], true)
+
+    #black queen side castle
+    postMove(@player2_token, [0,3], [0,5], true)
+  end
+
+  test "queen side castle not allowed" do
+    #white king pawn up 2
+    postMove(@player1_token, [6,3], [4,3], true)
+
+    #black king pawn up 2
+    postMove(@player2_token, [1,3], [3,3], true)
+
+    #white queen pawn up 1
+    postMove(@player1_token, [6,4], [5,4], true)
+
+    #black queen pawn up 1
+    postMove(@player2_token, [1,4], [2,4], true)
+
+    #white queen out
+    postMove(@player1_token, [7,4], [3,0], true)
+
+    #black queen out
+    postMove(@player2_token, [0,4], [4,0], true)
+
+    #white knight out
+    postMove(@player1_token, [7,6], [5,7], true)
+
+    #black knight out
+    postMove(@player2_token, [0,6], [2,7], true)
+
+    #white bishop out
+    postMove(@player1_token, [7,5], [4,2], true)
+
+    #black bishop out
+    postMove(@player2_token, [0,5], [3,2], true)
+
+    #white rook left
+    postMove(@player1_token, [7,7], [7,6], true)
+
+    #black rook left
+    postMove(@player2_token, [0,7], [0,5], true)
+
+    #white rook right
+    postMove(@player1_token, [7,6], [7,7], true)
+
+    #black rook right (but not all the way (out of position for castle))
+    postMove(@player2_token, [0,5], [0,6], true)
+
+    #white queen side castle
+    postMove(@player1_token, [7,3], [7,5], false)
+
+    #white king move to allow black to go
+    postMove(@player1_token, [7,3], [7,4], true)
+
+    #black queen side castle
+    postMove(@player2_token, [0,3], [0,5], false)
+
+
+  end
+
 end

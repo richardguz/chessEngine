@@ -1,5 +1,6 @@
 class Queen
-	def self.attemptMove(to, from, board)
+	def self.attemptMove(to, from, game)
+		board = JSON.parse(game.board)['board']
 		if isValidMove?(to, from, board)
 			board[to[0]][to[1]] = board[from[0]][from[1]]
 			board[from[0]][from[1]] = ''

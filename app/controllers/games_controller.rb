@@ -93,7 +93,7 @@ class GamesController < ApplicationController
 			if isPlayerTurn?(player_token, game)
 				#check if the move is valid
 				old_board = JSON.parse(game.board)['board']
-				new_board = attemptMove(game, from, to)
+				new_board = attemptMove(to, from, game)
 				if !boardsIdentical?(old_board, new_board)
 					#change the state of the board accordingly (and change the turn variable)
 					game.board = {:board => new_board}.to_json
@@ -136,7 +136,7 @@ class GamesController < ApplicationController
 		end
 	end
 
-	def attemptMove(game, from, to)
+	def attemptMove(to, from, game)
 		old_board = JSON.parse(game.board)['board']
 		#check if the coords are on the board
 		if !isOnBoard?(to, from)
@@ -156,7 +156,7 @@ class GamesController < ApplicationController
 		if !isValidTarget?(piece_moved, to, old_board)
 			return old_board
 		end
-		return attemptMoveForPiece(piece_moved, from, to, old_board)
+		return attemptMoveForPiece(to, from, game, piece_moved)
 	end
 
 	def isMoveValid?(game, from, to)
@@ -185,20 +185,21 @@ class GamesController < ApplicationController
 		return true
 	end 
 
-	def attemptMoveForPiece(piece, from, to, old_board)
+	def attemptMoveForPiece(to, from, game, piece)
+		old_board = JSON.parse(game.board)['board']
 		case piece
 			when 'N', 'n'
-				return Knight.attemptMove(to, from, old_board)
+				return Knight.attemptMove(to, from, game)
 			when 'R', 'r'
-				return Rook.attemptMove(to, from, old_board)
+				return Rook.attemptMove(to, from, game)
 			when 'K', 'k'
-				return King.attemptMove(to, from, old_board, piece)
+				return King.attemptMove(to, from, game)
 			when 'Q', 'q'
-				return Queen.attemptMove(to, from, old_board)
+				return Queen.attemptMove(to, from, game)
 			when 'B', 'b'
-				return Bishop.attemptMove(to, from, old_board)
+				return Bishop.attemptMove(to, from, game)
 			when 'P', 'p'
-				return Pawn.attemptMove(to, from, old_board, piece)
+				return Pawn.attemptMove(to, from, game)
 			else return old_board
 		end
 	end

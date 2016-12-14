@@ -1,6 +1,8 @@
 class Pawn
 
-	def self.attemptMove(to, from, board, piece)
+	def self.attemptMove(to, from, game)		
+		board = JSON.parse(game.board)['board']
+		piece = board[from[0]][from[1]]
 		if isValidMove?(to, from, board, piece)
 			board[to[0]][to[1]] = board[from[0]][from[1]]
 			board[from[0]][from[1]] = ''

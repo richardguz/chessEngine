@@ -1,8 +1,22 @@
 class Rook
-	def self.attemptMove(to, from, board)
+	def self.attemptMove(to, from, game)
+		board = JSON.parse(game.board)['board']
 		if isValidMove?(to, from, board)
 			board[to[0]][to[1]] = board[from[0]][from[1]]
 			board[from[0]][from[1]] = ''
+			if game.player1_turn
+				if from == [7,0]
+					game.white_can_castle_king_side = false
+				elsif from == [7,7]
+					game.white_can_castle_queen_side = false
+				end
+			else
+				if from == [0,0]
+					game.black_can_castle_king_side = false
+				elsif from == [0,7]
+					game.black_can_castle_queen_side = false
+				end			
+			end
 		end
 		return board
 	end
