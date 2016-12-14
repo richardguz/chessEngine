@@ -32,7 +32,6 @@ class Pawn
 	end
 
 	def self.isValidTake?(to, from, board, piece, hypothetical)
-		puts "CHECKING PAWN"
 		x1 = from[0]
 		x2 = to[0]
 		y1 = from[1]
@@ -42,7 +41,6 @@ class Pawn
 		ydiff = (y2 - y1).abs
 		#check if there is a piece in the to
 		if board[x2][y2] == '' && !hypothetical
-			puts "#1"
 			return false
 		end
 
@@ -53,10 +51,8 @@ class Pawn
 		end
 
 		if xdiff != 1
-			puts "#2"
 			return false
 		elsif ydiff != 1
-			puts "#3"
 			return false
 		end
 

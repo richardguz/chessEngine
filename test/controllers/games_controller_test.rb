@@ -1,7 +1,171 @@
 require 'test_helper'
 
 class GamesControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+	def setup
+		board = [['r', 'n', 'b', 'k', 'q', 'b', 'n', 'r'],
+						 ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+						 ['' ,  '',  '',  '',  '', '' , '' , '' ],
+						 ['' ,  '',  '',  '',  '', '' , '' , '' ],
+						 ['' ,  '',  '',  '',  '', '' , '' , '' ],
+						 ['' ,  '',  '',  '',  '', '' , '' , '' ],
+						 ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+						 ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R']]
+		@player1_token = "a"
+		@player2_token = "b"
+		@game = Game.create(:player1_token => @player1_token, :player2_token => @player2_token, :board => {:board => board}.to_json, :player1_turn => true)
+	end
+
+	def postMove(token, from, to, valid)
+		headers = { 'CONTENT_TYPE' => 'application/json' }
+		params = { token: token, from: from, to: to}
+		post "/games/" + @game.id.to_s + "/move", as: :json, headers: headers, params: params
+		assert_response :success
+		if valid
+		  assert_equal "", response.body
+		else
+    	assert_equal JSON.parse(response.body), {"error" => "Move is invalid"}
+		end
+	end
+  
+  test "pawn movement" do
+  	#white king pawn 2 spaces
+  	postMove(@player1_token, [6,3], [4,3], true)
+
+    #black king pawn 2 spaces
+    postMove(@player2_token, [1,3], [3,3], true)
+
+    #white queen pawn 1 space
+    postMove(@player1_token, [6,4], [5,4], true)
+
+    #black queen pawn 1 spaces
+    postMove(@player2_token, [1,4], [2,4], true)
+
+    #white queen pawn 2 more spaces try
+    postMove(@player1_token, [5,4], [3,4], false)
+
+    #white queen pawn 1 more space
+    postMove(@player1_token, [5,4], [4,4], true)
+
+    #black pawn take pawn
+    postMove(@player2_token, [3,3], [4,4], true)
+
+  end
+
+  test "rook movement" do
+  	#white left rook pawn up 2
+  	postMove(@player1_token, [6,0], [4,0], true)
+
+    #black left rook pawn up 2
+  	postMove(@player2_token, [1,0], [3,0], true)
+
+    #white queen pawn up 1
+  	postMove(@player1_token, [6,4], [5,4], true)
+
+    #black rook up 4 try
+  	postMove(@player2_token, [0,0], [4,0], false)
+  
+    #black left rook up 2
+  	postMove(@player2_token, [0,0], [2,0], true)
+
+    #white rook up 2
+  	postMove(@player1_token, [7,0], [5,0], true)
+
+    #black left rook right 5
+  	postMove(@player2_token, [2,0], [2,5], true)
+  end
+
+  test "knight movement" do
+  	#white knight up 2 right 1
+  	postMove(@player1_token, [7,1], [5,2], true)
+
+    #black knight up 2 left 1
+    postMove(@player2_token, [0,1], [2,0], true)
+
+    #white knight up 1 left 2
+    postMove(@player1_token, [5,2], [4,0], true)
+
+    #black knight try up 2 right 2
+    postMove(@player2_token, [2,0], [4,2], false)
+  end
+
+  test "bishop movement" do
+  	#white king pawn up 2
+  	postMove(@player1_token, [6,3], [4,3], true)
+
+  	#black queen pawn up 2
+    postMove(@player2_token, [1,4], [3,4], true)
+
+    #white black bishop up 2 right 2
+  	postMove(@player1_token, [7,2], [5,4], true)
+
+  	#black black bishop up 3 left 3
+    postMove(@player2_token, [0,5], [3,2], true)
+
+    #white black bishop take black black bishop try
+  	postMove(@player1_token, [5,4], [3,2], false)
+
+  	#white king pawn up 1
+  	postMove(@player1_token, [4,3], [3,3], true)
+
+  	#black black bishop takes white black bishop
+    postMove(@player2_token, [3,2], [5,4], true)
+  end
+
+  test "king movement" do
+  	#white king pawn up 2
+  	postMove(@player1_token, [6,3], [4,3], true)
+
+  	#black king pawn up 2
+  	postMove(@player2_token, [1,3], [3,3], true)
+
+  	#white king up 1
+  	postMove(@player1_token, [7,3], [6,3], true)
+
+  	#black king up 1
+  	postMove(@player2_token, [0,3], [1,3], true)
+
+  	#white king up 1 more 
+  	postMove(@player1_token, [6,3], [5,3], true)
+ 
+  	#black king up 1 more
+  	postMove(@player2_token, [1,3], [2,3], true)
+
+  	#white king down 1 
+  	postMove(@player1_token, [5,3], [6,3], true)
+
+  	#black queen to check test position
+  	postMove(@player2_token, [0,4], [3,1], true)
+
+  	#white king up 1 try (but would be check)
+  	postMove(@player1_token, [6,3], [5,3], false)
+  end
+
+  test "queen movement" do
+  	#white queen pawn up 2
+  	postMove(@player1_token, [6,4], [4,4], true)
+
+  	#black king pawn up 2
+  	postMove(@player2_token, [1,3], [3,3], true)
+
+  	#white queen up 2
+  	postMove(@player1_token, [7,4], [5,4], true)
+
+  	#black queen up 3 left 3
+  	postMove(@player2_token, [0,4], [3,1], true)
+
+  	#white queen pawn up 1
+  	postMove(@player1_token, [4,4], [3,4], true)
+
+  	#black king pawn up 1
+  	postMove(@player2_token, [3,3], [4,3], true)
+
+  	#white rook pawn up 1
+  	postMove(@player1_token, [6,0], [5,0], true)
+
+  	#black queen right 5 try
+  	postMove(@player2_token, [3,1], [3,6], false)
+
+  	#black queen right 3, take white king pawn
+  	postMove(@player2_token, [3,1], [3,4], true)
+  end
 end
