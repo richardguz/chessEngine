@@ -1,11 +1,17 @@
 class Pawn
-
+	include PieceModule
 	def self.attemptMove(to, from, game)		
 		board = JSON.parse(game.board)['board']
 		en_passant = JSON.parse(game.en_passant)
 		piece = board[from[0]][from[1]]
 		if isValidMove?(to, from, board, piece)
+
+			cell_attacked = board[to[0]][to[1]]
+			if cell_attacked != ''
+				take_piece(cell_attacked, game)
+			end
 			board[to[0]][to[1]] = board[from[0]][from[1]]
+
 			if to[0] == 7
 				board[to[0]][to[1]] = 'q'
 			elsif to[0] == 0
@@ -115,5 +121,14 @@ class Pawn
 		end
 
 		return true
+	end
+
+	def self.take_piece(piece, game)
+		if (p = Piece.find_by(:representation => piece))
+			game.pieces << p
+		else
+			p = Piece.create(:representation => piece)
+			game.pieces << p
+		end
 	end
 end

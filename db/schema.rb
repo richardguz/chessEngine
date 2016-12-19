@@ -10,7 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214042424) do
+ActiveRecord::Schema.define(version: 20161219064758) do
+
+  create_table "Games_Pieces", id: false, force: :cascade do |t|
+    t.integer "game_id",  null: false
+    t.integer "piece_id", null: false
+  end
 
   create_table "games", force: :cascade do |t|
     t.datetime "created_at",                                 null: false
@@ -24,6 +29,14 @@ ActiveRecord::Schema.define(version: 20161214042424) do
     t.boolean  "black_can_castle_king_side",  default: true
     t.boolean  "white_can_castle_queen_side", default: true
     t.boolean  "black_can_castle_queen_side", default: true
+  end
+
+  create_table "pieces", force: :cascade do |t|
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "representation"
+    t.string   "color"
+    t.index ["representation"], name: "index_pieces_on_representation", unique: true
   end
 
 end

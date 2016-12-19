@@ -5,7 +5,7 @@
 		<% @board['board'].each_with_index do |row, i|%>
 			<tr><th><%= 8 - i %></th>
 			<% row.each_with_index do |cell, j| %>
-				<td id="<%= i %><%= j %>"><%= cell %></td>
+				<td <% if /[[:upper:]]/.match(cell) %> style="color:blue" <% else %> style="color:red" <% end %> id="<%= i %><%= j %>"><%= cell %></td>
 			<% end %>
 			<th><%= 8 - i %></th>
 			</tr>
