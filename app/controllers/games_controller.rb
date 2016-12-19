@@ -60,6 +60,17 @@ class GamesController < ApplicationController
 		if Game.exists?(params[:id])
 			@game = Game.find(params[:id])
 			@board = JSON.parse(@game.board)
+			@pieces_captured_white_string = ""
+			@pieces_captured_black_string = ""
+			if (@game.pieces != nil)
+				@game.pieces.each do |p|
+					if upcase?(p.representation)
+						@pieces_captured_white_string.concat(" ").concat(p.representation)
+					else
+						@pieces_captured_black_string.concat(" ").concat(p.representation)
+					end
+				end
+			end
 		else
 			render :json => {:error => "Could not find game"}
 		end
@@ -71,6 +82,11 @@ class GamesController < ApplicationController
 			game = Game.find(params[:id])
 			board = JSON.parse(game.board)
 			en_passant = JSON.parse(game.en_passant)
+			pieces_captured = game.pieces
+			pieces_captured_arr = Array.new
+			pieces_captured.each do |p|
+				pieces_captured_arr.push(p.representation)
+			end
 			data = {
 				:turn => game.player1_turn,
 				:board => board['board'], 
@@ -78,7 +94,8 @@ class GamesController < ApplicationController
 				:white_can_castle_queen_side => game.white_can_castle_queen_side, 
 				:black_can_castle_king_side => game.black_can_castle_king_side,
 				:black_can_castle_queen_side => game.black_can_castle_queen_side, 
-				:en_passant => en_passant
+				:en_passant => en_passant,
+				:pieces_captured => pieces_captured_arr
 			}
 			render :json => data
 		else

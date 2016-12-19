@@ -14,6 +14,16 @@
 	</table>
 </div>
 
+<div id="captured_pieces">
+	<h4>Captured Pieces</h4>
+	<div id="captured_pieces_white" style="color:blue">
+		<%= @pieces_captured_white_string %>
+	</div>
+	<div id="captured_pieces_black" style="color:red">
+		<%= @pieces_captured_black_string %>
+	</div>
+</div>
+
 <script type="text/javascript">
 	//get game id
 	var gid = "<%= @game.id %>"
