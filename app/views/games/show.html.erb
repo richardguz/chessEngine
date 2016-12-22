@@ -5,7 +5,21 @@
 		<% @board['board'].each_with_index do |row, i|%>
 			<tr><th><%= 8 - i %></th>
 			<% row.each_with_index do |cell, j| %>
-				<td <% if /[[:upper:]]/.match(cell) %> style="color:blue" <% else %> style="color:red" <% end %> id="<%= i %><%= j %>"><%= cell %></td>
+				<td <% if /[[:upper:]]/.match(cell) %> style="color:blue" <% else %> style="color:red" <% end %> class="cell" id="<%= i %><%= j %>">
+					<%= image_tag "white_rook.png", :id => "wr" if cell == 'R' %>
+					<%= image_tag "white_knight.png", :id => "wr" if cell == 'N' %>
+					<%= image_tag "white_bishop.png", :id => "wr" if cell == 'B' %>
+					<%= image_tag "white_king.png", :id => "wr" if cell == 'K' %>
+					<%= image_tag "white_queen.png", :id => "wr" if cell == 'Q' %>
+					<%= image_tag "white_pawn.png", :id => "wr" if cell == 'P' %>
+					<%= image_tag "black_rook.png", :id => "wr" if cell == 'r' %>
+					<%= image_tag "black_knight.png", :id => "wr" if cell == 'n' %>
+					<%= image_tag "black_bishop.png", :id => "wr" if cell == 'b' %>
+					<%= image_tag "black_king.png", :id => "wr" if cell == 'k' %>
+					<%= image_tag "black_queen.png", :id => "wr" if cell == 'q' %>
+					<%= image_tag "black_pawn.png", :id => "wr" if cell == 'p' %>
+					<%= image_tag "blank.JPG", :id => "wr" if cell == '' %>
+				</td>
 			<% end %>
 			<th><%= 8 - i %></th>
 			</tr>
@@ -24,12 +38,47 @@
 	</div>
 </div>
 
+<input type="text" id="token">TOKEN ID: </input>
+<input type="button" value="click" OnClick="getToken()"/>
+
 <script type="text/javascript">
 	//get game id
+	function getToken() {
+		t = document.getElementById('token').value
+		token = t
+	}
+	var origin = -1;
+	var to = -1;
 	var gid = "<%= @game.id %>"
+	
 
 	//begin polling for game updates
 	window.setInterval(function(){
 	  		pollForGameUpdates(gid);
 	}, 2000);
+
+	$(document).on('click', 'td', function () {
+		if (origin == -1) {
+			origin = this.id;
+		}
+		else {
+			to = this.id
+			var move = new Object();
+			move.token = token;
+			move.from  = [Math.floor(origin/10), origin % 10];
+			move.to  = [Math.floor(to/10), to % 10];
+			var jsonString= JSON.stringify(move);
+			$.ajax({
+				type: "POST",
+				url: "/games/" + gid + "/move",
+				processData: false,
+				contentType: 'application/json',
+				data: jsonString,
+				success: function(r) {
+				}
+			});
+			to = -1;
+			origin = -1;
+		}
+});
 </script>

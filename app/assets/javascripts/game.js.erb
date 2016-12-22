@@ -1,0 +1,86 @@
+function pollForGameUpdates(gid){
+	$.get("/games/" + gid + "/state", function(game){
+		//successfully got updates
+		var board = game['board'];
+		var turn = game['turn'];
+		var pieces_captured = game['pieces_captured'];
+		for (i = 0; i < 8; i++){ 
+			for (j = 0; j < 8; j++){
+    		var id = i.toString() + j.toString();
+    		if (board[i][j] === board[i][j].toUpperCase()){
+    			$('#' + id).css({ 'color': 'blue'});
+    		}else{
+    			$('#' + id).css({ 'color': 'red'});
+    		}
+    		var piece = board[i][j];
+    		var image_name = "";
+    		if (piece == 'R') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('white_rook.png')%>');
+    		}
+    		else if (piece == 'N') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('white_knight.png')%>');
+    		}
+    		else if (piece == 'B') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('white_bishop.png')%>');
+    		}
+    		else if (piece == 'K') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('white_king.png')%>');
+    		}
+    		else if (piece == 'Q') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('white_queen.png')%>');
+    		}
+    		else if (piece == 'P') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('white_pawn.png')%>');
+    		}
+    		else if (piece == 'r') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('black_rook.png')%>');
+    		}
+    		else if (piece == 'n') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('black_knight.png')%>');
+    		}
+    		else if (piece == 'b') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('black_bishop.png')%>');
+    		}
+    		else if (piece == 'k') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('black_king.png')%>');
+    		}
+    		else if (piece == 'q') {
+    			$('#' + id + ' img').attr('src', '<%= image_url('black_queen.png')%>');
+    		}
+    		else if (piece == 'p') {
+    			$('#' + id + ' img').append('<img src=<%= image_url('black_pawn.png')%>')
+    			$('#' + id + ' img').attr('src', '<%= image_url('black_pawn.png')%>');
+    		}
+    		else{
+    			$('#' + id + ' img').attr('src', '<%= image_url('blank.JPG')%>');
+    		}
+
+		}
+	}
+	
+
+		//update the pieces captured div
+		$('#captured_pieces_white').text('');
+		$('#captured_pieces_black').text('');
+		$('#captured_pieces_white').css({ 'color': 'blue'});
+		$('#captured_pieces_black').css({ 'color': 'red'});
+		var captured_pieces_white = "";
+		var captured_pieces_black = "";
+		for (i = 0; i < pieces_captured.length; i++){
+			if(pieces_captured[i] === pieces_captured[i].toUpperCase()){
+				captured_pieces_white += " " + pieces_captured[i];
+			}else{
+				captured_pieces_black += " " + pieces_captured[i];;
+			}
+		}
+		$('#captured_pieces_white').text(captured_pieces_white);
+		$('#captured_pieces_black').text(captured_pieces_black);
+		
+		if (turn){
+			$('#show_turn').text("White's Turn");
+		}
+		else{
+			$('#show_turn').text("Black's Turn");
+		}
+	});
+}

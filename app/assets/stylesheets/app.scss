@@ -6,11 +6,16 @@
   }
 }
 
+.cell {
+	height: 60px;
+	width: 60px;
+}
+
 .board{
-	width: 164px;
-	margin-left: -82px; /* half of your element's width */
-	height: 280px;
-	margin-top: -140px;  /* half of your element's height */
+	width: 500px;
+	margin-left: -250px; /* half of your element's width */
+	height: 500px;
+	margin-top: -250px;  /* half of your element's height */
 
 	position: absolute;
 	/*for debugging*/
