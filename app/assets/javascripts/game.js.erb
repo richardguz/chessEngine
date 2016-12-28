@@ -52,7 +52,15 @@ function pollForGameUpdates(gid){
     			$('#' + id + ' img').attr('src', '<%= image_url('black_pawn.png')%>');
     		}
     		else{
-    			$('#' + id + ' img').attr('src', '<%= image_url('blank.JPG')%>');
+                if (i % 2 == 0 && j % 2 == 0) {
+                    $('#' + id + ' img').attr('src', '<%= image_url('white.png')%>');
+                }
+                else if (i % 2 != 0 && j % 2 != 0) {
+                    $('#' + id + ' img').attr('src', '<%= image_url('white.png')%>');
+                }
+                else{
+                    $('#' + id + ' img').attr('src', '<%= image_url('brown.png')%>');
+                }
     		}
 
 		}

@@ -5,7 +5,16 @@
 		<% @board['board'].each_with_index do |row, i|%>
 			<tr><th><%= 8 - i %></th>
 			<% row.each_with_index do |cell, j| %>
-				<td <% if /[[:upper:]]/.match(cell) %> style="color:blue" <% else %> style="color:red" <% end %> class="cell" id="<%= i %><%= j %>">
+				<td
+				class="cell" 
+					<% if i % 2 == 0 and j % 2 == 0 %>
+						style='background-color: #ffffff';
+					<% elsif i % 2 != 0 and j % 2 != 0 %>
+						style='background-color: #ffffff';
+					<% else %>
+						style='background-color: #9b7333';
+					<% end %>
+				id="<%= i %><%= j %>">
 					<%= image_tag "white_rook.png", :id => "wr" if cell == 'R' %>
 					<%= image_tag "white_knight.png", :id => "wr" if cell == 'N' %>
 					<%= image_tag "white_bishop.png", :id => "wr" if cell == 'B' %>
@@ -18,7 +27,13 @@
 					<%= image_tag "black_king.png", :id => "wr" if cell == 'k' %>
 					<%= image_tag "black_queen.png", :id => "wr" if cell == 'q' %>
 					<%= image_tag "black_pawn.png", :id => "wr" if cell == 'p' %>
-					<%= image_tag "blank.JPG", :id => "wr" if cell == '' %>
+					<% if i % 2 == 0 and j % 2 == 0 %>
+						<%= image_tag "white.png", :id => "wr" if cell == '' %>
+					<% elsif i % 2 != 0 and j % 2 != 0 %>
+						<%= image_tag "white.png", :id => "wr" if cell == '' %>
+					<% else %>
+						<%= image_tag "brown.png", :id => "wr" if cell == '' %>
+					<% end %>
 				</td>
 			<% end %>
 			<th><%= 8 - i %></th>
