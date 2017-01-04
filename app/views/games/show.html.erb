@@ -53,18 +53,26 @@
 	</div>
 </div>
 
-<input type="text" id="token">TOKEN ID: </input>
-<input type="button" value="click" OnClick="getToken()"/>
+<input type="button" value="Join Game" OnClick="joinGame()"/>
 
 <script type="text/javascript">
 	//get game id
-	function getToken() {
-		t = document.getElementById('token').value
-		token = t
-	}
 	var origin = -1;
 	var to = -1;
-	var gid = "<%= @game.id %>"
+	var gid = "<%= @game.id %>";
+	var token = "";
+	
+	function joinGame() {
+		$.ajax({
+				type: "POST",
+				url: "/games/" + gid + "/join",
+				processData: false,
+				contentType: 'application/json',
+				success: function(r) {
+					token = r["token"];
+				}
+			});
+	}
 	
 
 	//begin polling for game updates
